@@ -1,16 +1,11 @@
 #include <stdio.h>
-#include <omp.h>
 
-int main()
+int main(int argc, char ∗∗ argv)
 {
-
-    omp_set_num_threads(16);
-
-// Do this part in parallel
 
 #pragma omp parallel
     {
-        printf("Print da thread");
+        printf("Hello␣OpenMP!\n");
     }
 
     return 0;

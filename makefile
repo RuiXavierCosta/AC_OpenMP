@@ -1,5 +1,5 @@
-CC=gcc
+CC=gcc -fopenmp
 CFLAGS=-I.
 
 makemain: main.c
-	$(CC) -o main main.o $(CFLAGS)
+	$(CC) main.c -o main
