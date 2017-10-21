@@ -1,18 +1,11 @@
-#include <stdio.h>
-#include <unistd.h>
-
-#ifdef _OPENMP
-#include <omp.h>
-#else
-#define omp_get_num_threads() 0
-#define omp_get_thread_num() 0
-#endif
+#include "exemplos.h"
 
 int main(int argc, char **argv)
 {
 
     int nthreads, thread_id;
     printf("I am the main thread.\n");
+    printf("lel %d \n", omp_get_num_threads());
 #pragma omp parallel private(nthreads, thread_id)
     {
         nthreads = omp_get_num_threads();
