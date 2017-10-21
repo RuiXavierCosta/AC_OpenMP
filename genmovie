@@ -1,0 +1,10 @@
+#!/bin/sh
+convert build/julia.pgm build/images/julia0000.png
+for i in build/julia????.pgm
+do
+echo $i build/images/`basename $i .pgm`.png
+convert $i `basename $i .pgm`.png
+done
+ffmpeg -framerate 5 -i build/images/julia%04d.png -s:v 800x600 -c:v libx264 \
+-profile:v high -crf 20 -pix_fmt yuv420p build/julia.mp4
+

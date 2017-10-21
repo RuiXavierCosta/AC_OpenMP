@@ -1,12 +1,9 @@
-CC=gcc -fopenmp
+CC=gcc -fopenmp -g
 CFLAGS=-I.
 
-makemain: main.c
-	$(CC) main.c -o build/main $(CFLAGS)
-
-fractal: fractal/fractal.c fractal/fractalfuncs.c 
-	gcc -g fractalfuncs.c fractal.c -o fractal
+fractal: fractal_novo.c fractal/fractalfuncs.c
+	$(CC) fractal/fractalfuncs.c fractal_novo.c -o build/fractal
 	chmod 755 genmovie
 
-make_movie:
-	./fractal/genmovie
+movie:
+	./genmovie

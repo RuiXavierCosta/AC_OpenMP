@@ -1,3 +1,4 @@
+
 #include <time.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -10,32 +11,25 @@
 
 void Generate(struct IMG *img)
 {
-
 	int j = 0;
 	int scrsizex, scrsizey;
 	scrsizex = img->cols;
 	scrsizey = img->rows;
 
-#pragma omp parallel //Prog. em Paralelo
+	do //Start vertical loop
 	{
-
-		do //Start vertical loop
+		int i = 0;
+		do //Start horizontal loop
 		{
-			int i = 0;
-			do //Start horizontal loop
-			{
-				julia(img, i, j);
-				i++;
-			} while ((i < scrsizex)); //End horizontal loop
-			j++;
-		} while ((j < scrsizey)); //End vertical loop
-	};							  //Fechar a programação em paralelo
-};
+			julia(img, i, j);
+			i++;
+		} while ((i < scrsizex)); //End horizontal loop
+		j++;
+	} while ((j < scrsizey)); //End vertical loop
+}
 
 void difuse(struct IMG *imgin, int nepocs, float alpha)
 {
-
-	//Nepocs and alpha are the variables recived
 	struct IMG *temp, *imgnew;
 	int i;
 	char filename[80];
@@ -46,9 +40,7 @@ void difuse(struct IMG *imgin, int nepocs, float alpha)
 	imgnew->pixels = (PIXEL *)malloc(imgnew->cols * imgnew->rows * sizeof(PIXEL));
 	for (i = 1; i <= nepocs; i++)
 	{
-// apply diffusion for each color channel, NEVER mixing them...
-
-#pragma omp parallel
+		// apply diffusion for each color channel, NEVER mixing them...
 
 		// YOUR CODE HERE
 
@@ -109,7 +101,7 @@ int main(int argc, char **argv)
 	t2 = clock();
 	printf("Julia Fractal gerado em %6.3f secs.\n", (((double)(t2 - t1)) / CLOCKS_PER_SEC));
 	//	mandel(img,resx,resy);
-	saveimg(img, "julia.pgm");
+	saveimg(img, "build/julia.pgm");
 
 	if (nepocs > 0)
 		difuse(img, nepocs, alpha);
