@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <math.h>
 #include <stdio.h>
-#include "fractalfuncs.h"
+#include "fractal/fractalfuncs.h"
 
 void Generate(struct IMG *img)
 {
