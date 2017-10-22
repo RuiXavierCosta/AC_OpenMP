@@ -1,4 +1,3 @@
-
 #include <time.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -8,6 +7,13 @@
 #include <math.h>
 #include <stdio.h>
 #include "fractal/fractalfuncs.h"
+
+#ifdef _OPENMP
+#include <omp.h>
+#else
+#define omp_get_num_threads() 0
+#define omp_get_thread_num() 0
+#endif
 
 void Generate(struct IMG *img)
 {
@@ -38,17 +44,32 @@ void difuse(struct IMG *imgin, int nepocs, float alpha)
 	imgnew->rows = imgin->rows;
 	imgnew->cols = imgin->cols;
 	imgnew->pixels = (PIXEL *)malloc(imgnew->cols * imgnew->rows * sizeof(PIXEL));
-	for (i = 1; i <= nepocs; i++)
+
+	int thread_id, nloops;
+#pragma omp parallel private(thread_id, nloops)
 	{
-		// apply diffusion for each color channel, NEVER mixing them...
+		nloops = 0;
+		thread_id = omp_get_thread_num();
 
-		// YOUR CODE HERE
+#pragma omp for
+		for (i = 1; i <= nepocs; i++)
+		{
+			if (nloops == 0)
+				printf("Thread %d started with i=%d\n", thread_id, i);
+			++nloops;
+			// apply diffusion for each color channel, NEVER mixing them...
 
-		sprintf(filename, "julia%04d.pgm", i);
-		saveimg(imgnew, filename);
-		temp = imgin;
-		imgin = imgnew;
-		imgnew = temp;
+			// YOUR CODE HERE
+
+			sprintf(filename, "build/images/julia%04d.pgm", i);
+			saveimg(imgnew, filename);
+			temp = imgin;
+			imgin = imgnew;
+			imgnew = temp;
+		}
+		thread_id = omp_get_thread_num();
+		printf("Thread %d performed %d iterations of the loop.\n",
+			   thread_id, nloops);
 	}
 }
 
