@@ -14,6 +14,7 @@ void Generate(struct IMG * img){
     int scrsizex,scrsizey;
     scrsizex=img->cols;
     scrsizey=img->rows;
+    int nloops= 0;
     
     do //Start vertical loop
     {
@@ -21,12 +22,16 @@ void Generate(struct IMG * img){
 	do							  			   //Start horizontal loop
 	{				
 	    julia(img,i,j);							   
-	    i++;
+        i++;
+        nloops++;
 	}
 	while ( (i<scrsizex)  );	  //End horizontal loop
 	j++;
     }
     while ( (j<scrsizey)  );        //End vertical loop
+    
+    printf("The total number of iterations is %d\n",
+    nloops);
 }
 
 void difuse(struct IMG * imgin, int nepocs, float alpha){
