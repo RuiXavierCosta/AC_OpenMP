@@ -172,7 +172,7 @@ void difuse(struct IMG * imgin, int nepocs, float alpha){
             }
         }
         
-        sprintf(filename,"build/difuse_images/output%04d.jpg",k);
+        sprintf(filename,"build/difuse_images/output%04d.pgm",k);
         saveimg(imgnew,filename);
         temp=imgin;
         imgin=imgnew;
