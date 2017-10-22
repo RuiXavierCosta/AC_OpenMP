@@ -108,14 +108,14 @@ PIXEL calculateDiffusion(int i, int j, struct IMG * imgin, float alpha){
     I_k = imgin->pixels;
 
     PIXEL diffused_pixel;
-
+    
     diffused_pixel.r = (1 - alpha) * I_k[j * imgin->cols + i].r +  //(1 − α)Ik(i, j) +
         alpha * (1/8) * (                       // α*(1/8)[
             I_k[(j-1) * imgin->cols + (i-1)].r +     // Ik(i-1, j-1)] +
             I_k[j * imgin->cols + i-1].r +           // Ik(i − 1, j) + 
             I_k[(j + 1) * imgin->cols + i-1].r +     // Ik(i − 1, j + 1) +
-            I_k[(j - 1) * imgin->cols + i-1].r +     // Ik(i, j − 1) +
-            I_k[(j + 1) * imgin->cols + i-1].r +     // Ik(i, j + 1) +
+            I_k[(j - 1) * imgin->cols + i].r +       // Ik(i, j − 1) +
+            I_k[(j + 1) * imgin->cols + i].r +       // Ik(i, j + 1) +
             I_k[(j - 1) * imgin->cols + i+1].r +     // Ik(i + 1, j − 1) +
             I_k[j * imgin->cols + i+1].r +           // Ik(i + 1, j) +
             I_k[(j + 1) * imgin->cols + i + 1].r     // Ik(i + 1, j + 1)] ,
@@ -126,8 +126,8 @@ PIXEL calculateDiffusion(int i, int j, struct IMG * imgin, float alpha){
             I_k[(j-1) * imgin->cols + (i-1)].g +     // Ik(i-1, j-1)] +
             I_k[j * imgin->cols + i-1].g +           // Ik(i − 1, j) + 
             I_k[(j + 1) * imgin->cols + i-1].g +     // Ik(i − 1, j + 1) +
-            I_k[(j - 1) * imgin->cols + i-1].g +     // Ik(i, j − 1) +
-            I_k[(j + 1) * imgin->cols + i-1].g +     // Ik(i, j + 1) +
+            I_k[(j - 1) * imgin->cols + i].g +       // Ik(i, j − 1) +
+            I_k[(j + 1) * imgin->cols + i].g +       // Ik(i, j + 1) +
             I_k[(j - 1) * imgin->cols + i+1].g +     // Ik(i + 1, j − 1) +
             I_k[j * imgin->cols + i+1].g +           // Ik(i + 1, j) +
             I_k[(j + 1) * imgin->cols + i + 1].g     // Ik(i + 1, j + 1)] ,
@@ -138,8 +138,8 @@ PIXEL calculateDiffusion(int i, int j, struct IMG * imgin, float alpha){
             I_k[(j-1) * imgin->cols + (i-1)].b +     // Ik(i-1, j-1)] +
             I_k[j * imgin->cols + i-1].b +           // Ik(i − 1, j) + 
             I_k[(j + 1) * imgin->cols + i-1].b +     // Ik(i − 1, j + 1) +
-            I_k[(j - 1) * imgin->cols + i-1].b +     // Ik(i, j − 1) +
-            I_k[(j + 1) * imgin->cols + i-1].b +     // Ik(i, j + 1) +
+            I_k[(j - 1) * imgin->cols + i].b +       // Ik(i, j − 1) +
+            I_k[(j + 1) * imgin->cols + i].b +       // Ik(i, j + 1) +
             I_k[(j - 1) * imgin->cols + i+1].b +     // Ik(i + 1, j − 1) +
             I_k[j * imgin->cols + i+1].b +           // Ik(i + 1, j) +
             I_k[(j + 1) * imgin->cols + i + 1].b     // Ik(i + 1, j + 1)] ,
@@ -162,10 +162,13 @@ void difuse(struct IMG * imgin, int nepocs, float alpha){
 	// apply diffusion for each color channel, NEVER mixing them...
         for(j=1; j <= imgin->cols -1; j++)
         {
-            #pragma omp parallel for
-            for(i=1; i <= imgin->rows -1; i++)
+            #pragma omp parallel
             {
-                imgnew->pixels[j * imgnew->cols + i] = calculateDiffusion(i, j, imgin, alpha);
+                #pragma omp for
+                for(i=1; i <= imgin->rows -1; i++)
+                {
+                    imgnew->pixels[j * imgnew->cols + i] = calculateDiffusion(i, j, imgin, alpha);
+                }
             }
         }
         
