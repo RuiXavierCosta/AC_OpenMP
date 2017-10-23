@@ -103,46 +103,43 @@ void Generate(struct IMG * img){
 	}	
 }
 
-PIXEL calculateDiffusion(int i, int j, struct IMG * imgin, float alpha){
-    PIXEL * I_k = (PIXEL *)malloc(sizeof(PIXEL));
-    I_k = imgin->pixels;
-
+PIXEL calculateDiffusion(int i, int j, struct IMG * I_k, float alpha){
     PIXEL diffused_pixel;
     
-    diffused_pixel.r = (1 - alpha) * I_k[j * imgin->cols + i].r +  //(1 − α)Ik(i, j) +
+    diffused_pixel.r = (1 - alpha) * I_k->pixels[j * I_k->cols + i].r +  //(1 − α)Ik(i, j) +
         alpha * (1/8) * (                       // α*(1/8)[
-            I_k[(j-1) * imgin->cols + (i-1)].r +     // Ik(i-1, j-1)] +
-            I_k[j * imgin->cols + i-1].r +           // Ik(i − 1, j) + 
-            I_k[(j + 1) * imgin->cols + i-1].r +     // Ik(i − 1, j + 1) +
-            I_k[(j - 1) * imgin->cols + i].r +       // Ik(i, j − 1) +
-            I_k[(j + 1) * imgin->cols + i].r +       // Ik(i, j + 1) +
-            I_k[(j - 1) * imgin->cols + i+1].r +     // Ik(i + 1, j − 1) +
-            I_k[j * imgin->cols + i+1].r +           // Ik(i + 1, j) +
-            I_k[(j + 1) * imgin->cols + i + 1].r     // Ik(i + 1, j + 1)] ,
+            I_k->pixels[(j-1) * I_k->cols + (i-1)].r +     // Ik(i-1, j-1)] +
+            I_k->pixels[j * I_k->cols + i-1].r +           // Ik(i − 1, j) + 
+            I_k->pixels[(j + 1) * I_k->cols + i-1].r +     // Ik(i − 1, j + 1) +
+            I_k->pixels[(j - 1) * I_k->cols + i].r +       // Ik(i, j − 1) +
+            I_k->pixels[(j + 1) * I_k->cols + i].r +       // Ik(i, j + 1) +
+            I_k->pixels[(j - 1) * I_k->cols + i+1].r +     // Ik(i + 1, j − 1) +
+            I_k->pixels[j * I_k->cols + i+1].r +           // Ik(i + 1, j) +
+            I_k->pixels[(j + 1) * I_k->cols + i + 1].r     // Ik(i + 1, j + 1)] ,
         );      
 
-    diffused_pixel.g = (1 - alpha) * I_k[j * imgin->cols + i].g +  //(1 − α)Ik(i, j) +
+    diffused_pixel.g = (1 - alpha) * I_k->pixels[j * I_k->cols + i].g +  //(1 − α)Ik(i, j) +
         alpha * (1/8) * (                       // α*(1/8)[
-            I_k[(j-1) * imgin->cols + (i-1)].g +     // Ik(i-1, j-1)] +
-            I_k[j * imgin->cols + i-1].g +           // Ik(i − 1, j) + 
-            I_k[(j + 1) * imgin->cols + i-1].g +     // Ik(i − 1, j + 1) +
-            I_k[(j - 1) * imgin->cols + i].g +       // Ik(i, j − 1) +
-            I_k[(j + 1) * imgin->cols + i].g +       // Ik(i, j + 1) +
-            I_k[(j - 1) * imgin->cols + i+1].g +     // Ik(i + 1, j − 1) +
-            I_k[j * imgin->cols + i+1].g +           // Ik(i + 1, j) +
-            I_k[(j + 1) * imgin->cols + i + 1].g     // Ik(i + 1, j + 1)] ,
+            I_k->pixels[(j-1) * I_k->cols + (i-1)].g +     // Ik(i-1, j-1)] +
+            I_k->pixels[j * I_k->cols + i-1].g +           // Ik(i − 1, j) + 
+            I_k->pixels[(j + 1) * I_k->cols + i-1].g +     // Ik(i − 1, j + 1) +
+            I_k->pixels[(j - 1) * I_k->cols + i].g +       // Ik(i, j − 1) +
+            I_k->pixels[(j + 1) * I_k->cols + i].g +       // Ik(i, j + 1) +
+            I_k->pixels[(j - 1) * I_k->cols + i+1].g +     // Ik(i + 1, j − 1) +
+            I_k->pixels[j * I_k->cols + i+1].g +           // Ik(i + 1, j) +
+            I_k->pixels[(j + 1) * I_k->cols + i + 1].g     // Ik(i + 1, j + 1)] ,
         );  
 
-    diffused_pixel.b = (1 - alpha) * I_k[j * imgin->cols + i].b +  //(1 − α)Ik(i, j) +
+    diffused_pixel.b = (1 - alpha) * I_k->pixels[j * I_k->cols + i].b +  //(1 − α)Ik(i, j) +
         alpha * (1/8) * (                       // α*(1/8)[
-            I_k[(j-1) * imgin->cols + (i-1)].b +     // Ik(i-1, j-1)] +
-            I_k[j * imgin->cols + i-1].b +           // Ik(i − 1, j) + 
-            I_k[(j + 1) * imgin->cols + i-1].b +     // Ik(i − 1, j + 1) +
-            I_k[(j - 1) * imgin->cols + i].b +       // Ik(i, j − 1) +
-            I_k[(j + 1) * imgin->cols + i].b +       // Ik(i, j + 1) +
-            I_k[(j - 1) * imgin->cols + i+1].b +     // Ik(i + 1, j − 1) +
-            I_k[j * imgin->cols + i+1].b +           // Ik(i + 1, j) +
-            I_k[(j + 1) * imgin->cols + i + 1].b     // Ik(i + 1, j + 1)] ,
+            I_k->pixels[(j-1) * I_k->cols + (i-1)].b +     // Ik(i-1, j-1)] +
+            I_k->pixels[j * I_k->cols + i-1].b +           // Ik(i − 1, j) + 
+            I_k->pixels[(j + 1) * I_k->cols + i-1].b +     // Ik(i − 1, j + 1) +
+            I_k->pixels[(j - 1) * I_k->cols + i].b +       // Ik(i, j − 1) +
+            I_k->pixels[(j + 1) * I_k->cols + i].b +       // Ik(i, j + 1) +
+            I_k->pixels[(j - 1) * I_k->cols + i+1].b +     // Ik(i + 1, j − 1) +
+            I_k->pixels[j * I_k->cols + i+1].b +           // Ik(i + 1, j) +
+            I_k->pixels[(j + 1) * I_k->cols + i + 1].b     // Ik(i + 1, j + 1)] ,
         );  
 
     return diffused_pixel;
@@ -152,12 +149,13 @@ void difuse(struct IMG * imgin, int nepocs, float alpha){
     struct IMG * temp,*imgnew;
     int k, i, j;
     char filename[80];
-    
+	clock_t t1,t2;
+	
     imgnew=(struct IMG *) malloc(sizeof(struct IMG));
     imgnew->rows=imgin->rows;
     imgnew->cols=imgin->cols;
     imgnew->pixels=(PIXEL *)malloc(imgnew->cols*imgnew->rows*sizeof(PIXEL));
-
+	t1 = clock();
     for (k=1;k<=nepocs;k++){
 	// apply diffusion for each color channel, NEVER mixing them...
         for(j=1; j <= imgin->cols -1; j++)
@@ -177,7 +175,10 @@ void difuse(struct IMG * imgin, int nepocs, float alpha){
         temp=imgin;
         imgin=imgnew;
         imgnew=temp;
-    }
+	}
+	
+    t2=clock();
+    printf("Imagens geradas em %6.3f secs.\n",(((double)(t2-t1))/CLOCKS_PER_SEC));
 }
     
 int main(int argc, char ** argv){
