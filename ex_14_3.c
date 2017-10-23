@@ -148,7 +148,7 @@ PIXEL calculateDiffusion(int i, int j, struct IMG * I_k, float alpha){
 void difuse(struct IMG * imgin, int nepocs, float alpha){
     struct IMG * temp,*imgnew;
     int k, i, j;
-    char filename[80];
+    char filename[200];
 	clock_t t1,t2;
 	
     imgnew=(struct IMG *) malloc(sizeof(struct IMG));
@@ -158,19 +158,19 @@ void difuse(struct IMG * imgin, int nepocs, float alpha){
 	t1 = clock();
     for (k=1;k<=nepocs;k++){
 	// apply diffusion for each color channel, NEVER mixing them...
-        for(j=1; j <= imgin->cols -1; j++)
+        for(j=1; j < imgin->cols -1; j++)
         {
             #pragma omp parallel
             {
                 #pragma omp for
-                for(i=1; i <= imgin->rows -1; i++)
+                for(i=1; i < imgin->rows -1; i++)
                 {
-                    imgnew->pixels[j * imgnew->cols + i] = calculateDiffusion(i, j, imgin, alpha);
+					imgnew->pixels[j * imgnew->cols + i] = calculateDiffusion(i, j, imgin, alpha);
                 }
             }
         }
         
-        sprintf(filename,"build/difuse_images/output%04d.pgm",k);
+        sprintf(filename,"build/difuse_images/output%04d.jpg",k);
         saveimg(imgnew,filename);
         temp=imgin;
         imgin=imgnew;
